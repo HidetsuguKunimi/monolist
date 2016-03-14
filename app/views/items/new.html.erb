@@ -11,6 +11,7 @@
       気になったアイテムが欲しければ「Want」持ってれば「Have」しましょう
     </div>
     <%= render 'amazon_items' , amazon_items: @amazon_items %>
+  
   <% elsif params[:q].present? %>
     <div class="alert alert-danger">
       <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
