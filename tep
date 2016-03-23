@@ -1,0 +1,17 @@
+
+[1mFrom:[0m /usr/local/rvm/gems/ruby-2.3.0/gems/activerecord-4.2.1/lib/active_record/core.rb @ line 514 ActiveRecord::Core#update_attributes_from_transaction_state:
+
+    [1;34m513[0m: [32mdef[0m [1;34mupdate_attributes_from_transaction_state[0m(transaction_state, depth)
+ => [1;34m514[0m:   [32mif[0m transaction_state && transaction_state.finalized? && !has_transactional_callbacks?
+    [1;34m515[0m:     [32munless[0m @reflects_state[depth]
+    [1;34m516[0m:       restore_transaction_record_state [32mif[0m transaction_state.rolledback?
+    [1;34m517[0m:       clear_transaction_record_state
+    [1;34m518[0m:       @reflects_state[depth] = [1;36mtrue[0m
+    [1;34m519[0m:     [32mend[0m
+    [1;34m520[0m: 
+    [1;34m521[0m:     [32mif[0m transaction_state.parent && !@reflects_state[depth+[1;34m1[0m]
+    [1;34m522[0m:       update_attributes_from_transaction_state(transaction_state.parent, depth+[1;34m1[0m)
+    [1;34m523[0m:     [32mend[0m
+    [1;34m524[0m:   [32mend[0m
+    [1;34m525[0m: [32mend[0m
+

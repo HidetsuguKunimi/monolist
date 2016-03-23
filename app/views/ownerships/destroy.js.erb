@@ -1,7 +1,7 @@
 <% if params[:type] == "Have" %>
-  $(".have-<%= @item.id %>").replaceWith("<%= escape_javascript(render('items/have' , item: @item)) %>");
+  $(".have-<%= @item.item_id %>").replaceWith("<%= escape_javascript(render('items/have' , item: @item)) %>");
 <% else %>
-  $(".want-<%= @item.id %>").replaceWith("<%= escape_javascript(render('items/want' , item: @item)) %>");
+  $(".want-<%= @item.item_id %>").replaceWith("<%= escape_javascript(render('items/want' , item: @item)) %>");
 <% end %>
 
 $('.btn-have,.btn-want').removeAttr('disabled');

@@ -7,27 +7,34 @@ class OwnershipsController < ApplicationController
     else
       @item = Item.find(params[:item_id])
     end
-
+  
     # itemsテーブルに存在しない場合はAmazonのデータを登録する。
     if @item.new_record?
       begin
-       response=Amazon::Ecs.item_lookup([:asin],:response_group => 'ItemAttributes,Images',:country => 'jp')
+       response=Amazon::Ecs.item_lookup(params[:asin],:response_group => 'ItemAttributes,Images',:country => 'jp')
+     
         # TODO 商品情報の取得 Amazon::Ecs.item_lookupを用いてください
         # response = {}
       rescue Amazon::RequestError => e
         return render :js => "alert('#{e.message}')"
       end
-      response.items.each do |item|
-      amazon_item = response.items.first
-      item.title        = amazon_item.get('ItemAttributes/Title')
-      item.small_image  = amazon_item.get("SmallImage/URL")
-      item.medium_image = amazon_item.get("MediumImage/URL")
-      item.large_image  = amazon_item.get("LargeImage/URL")
-      item.detail_page_url = amazon_item.get("DetailPageURL")
-      item.raw_info        = amazon_item.get_hash
-      item.save!
-      end
+  
+      amazon_item       = response.items.first
+  
+      @item.asin         = amazon_item.get("ASIN")
+      @item.title        = amazon_item.get('ItemAttributes/Title')
+      @item.small_image  = amazon_item.get("SmallImage/URL")
+      @item.medium_image = amazon_item.get("MediumImage/URL")
+      @item.large_image  = amazon_item.get('LargeImage/URL')
+      @item.detail_page_url = amazon_item.get("DetailPageURL")
+      @item.raw_info        = amazon_item.get_hash
+      @item.save!
     end
+
+    # TODO ユーザにwant or haveを設定する
+    # params[:type]の値にHaveボタンが押された時には「Have」,
+    # Wantボタンが押された時には「Want」が設定されています
+
 
     if params[:type] == "Want" 
       current_user.want(@item)
@@ -43,16 +50,15 @@ class OwnershipsController < ApplicationController
   end
 
   def destroy
-#    if params[:type] == "Want" 
-      @item = current_user.wants.find(params[:item_id])
-#      current_user.unwant(@item)
-#    else 
-#      @item = current_user.haves.find(params[:item_id])
-#      current_user.unhave(@item)
-#    end
+    @item = current_user.ownerships.find_by(item_id: params[:item_id])
+    if params[:type] == "Want" 
+      current_user.unwant(@item)
+    else 
+      current_user.unhave(@item)
+    end
+
     # TODO 紐付けの解除。 
     # params[:type]の値にHave itボタンが押された時には「Have」,
     # Want itボタンが押された時には「Want」が設定されています。
-
   end
 end
