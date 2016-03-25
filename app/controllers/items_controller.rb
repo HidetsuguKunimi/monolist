@@ -8,13 +8,20 @@ class ItemsController < ApplicationController
                                   :search_index => 'All' , 
                                   :response_group => 'Medium' , 
                                   :country => 'jp')
-      
+    
     @amazon_items=response.items
     
     end
   end
 
   def show
+
+    @want=Ownership.where(item_id: params[:id] , type: 'Want').pluck(:user_id)
+    @want_users=User.where(id: @want)
+
+    @have=Ownership.where(item_id: params[:id] , type: 'Have').pluck(:user_id)
+    @have_users=User.where(id: @have)
+
   end
 
   private
